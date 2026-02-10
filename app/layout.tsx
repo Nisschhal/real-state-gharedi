@@ -118,7 +118,6 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      {" "}
       {/* Wraps the app so useAuth() and <UserButton /> work anywhere */}
       <html lang="en" suppressHydrationWarning>
         {/* lang="en": Important for Screen Readers and SEO. */}

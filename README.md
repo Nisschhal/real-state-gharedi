@@ -2,6 +2,7 @@
 
     - Sign up and create a project in [Clerk](https://clerk.com/)
     - Follow the given instruction to setup clerk in your project
+    - Setup `proxy.ts` a Gatekeeper for you app in root and apply the route middleware: public, private, onboarding routes, for reference checkout the `proxy.ts` file
 
 ## Sanity Setup
 
