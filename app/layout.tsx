@@ -15,18 +15,24 @@ import "./globals.css" // WHY: The global stylesheet (Tailwind) that applies to 
  */
 
 // Body font: Inter (highly readable for long text)
+// INTER: This is a "Variable Font" (One file handles all weights)
+
 const inter = Inter({
   variable: "--font-inter", // Creates a CSS variable: var(--font-inter)
-  subsets: ["latin"],
+  subsets: ["latin"], // Only download English/Western characters (saves 90% file size)
   display: "swap", // FONT DISPLAY OPTIONS EXPLAINED BELOW
 })
 
 // Heading font: Plus Jakarta Sans (Modern and geometric)
+// PLUS JAKARTA: We choose specific weights to keep the file light
+
 const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta",
-  subsets: ["latin"],
+  subsets: ["latin"], // Only download Latin characters
   display: "swap",
-  weight: ["500", "600", "700", "800"], // Only download these specific weights to save data
+  // WHY: We only want these 4 thicknesses.
+  // If we didn't add this, we might download weights we never use, wasting bandwidth.
+  weight: ["500", "600", "700", "800"],
 })
 
 // Code font: Geist Mono
