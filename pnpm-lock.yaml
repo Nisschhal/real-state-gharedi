@@ -17,6 +17,12 @@ importers:
       '@hookform/resolvers':
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.71.1(react@19.2.3))
+      '@sanity/client':
+        specifier: ^7.14.1
+        version: 7.14.1(debug@4.4.3)
+      '@sanity/icons':
+        specifier: ^3.7.4
+        version: 3.7.4(react@19.2.3)
       '@sanity/image-url':
         specifier: ^1.2.0
         version: 1.2.0
@@ -35,6 +41,9 @@ importers:
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
+      dotenv:
+        specifier: ^17.2.4
+        version: 17.2.4
       embla-carousel-react:
         specifier: ^8.6.0
         version: 8.6.0(react@19.2.3)
@@ -68,6 +77,9 @@ importers:
       react-hook-form:
         specifier: ^7.71.1
         version: 7.71.1(react@19.2.3)
+      react-icons:
+        specifier: ^5.5.0
+        version: 5.5.0(react@19.2.3)
       react-resizable-panels:
         specifier: ^4.6.2
         version: 4.6.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -5853,6 +5865,11 @@ packages:
         optional: true
       typescript:
         optional: true
+
+  react-icons@5.5.0:
+    resolution: {integrity: sha512-MEFcXdkP3dLo8uumGI5xN3lDFNsRtrjbOEKDLD7yv76v4wpnEq2Lt2qeHaQOr34I/wPN3s3+N08WkQ+CW37Xiw==}
+    peerDependencies:
+      react: '*'
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
@@ -13096,6 +13113,10 @@ snapshots:
     optionalDependencies:
       react-dom: 19.2.3(react@19.2.3)
       typescript: 5.9.3
+
+  react-icons@5.5.0(react@19.2.3):
+    dependencies:
+      react: 19.2.3
 
   react-is@16.13.1: {}
 

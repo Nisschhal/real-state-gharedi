@@ -2,10 +2,15 @@ import {
   ArrowRight,
   Heart,
   Home,
+  List,
+  LucideUserRoundSearch,
   MapPin,
   Search,
   Shield,
+  Star,
+  User,
   Users,
+  Users2,
 } from "lucide-react"
 import Link from "next/link"
 import { PropertyGrid } from "@/components/property/PropertyGrid"
@@ -157,7 +162,7 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
             {/* Step 1 */}
             <div className="relative text-center group">
-              <div className="w-20 h-20 bg-background border-2 border-primary/20 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-warm transition-[transform,box-shadow] duration-300 group-hover:-translate-y-1 group-hover:shadow-warm-md group-hover:border-primary/40">
+              <div className="w-20 h-20 bg-background border-2 border-primary/20 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-warm group:transition-[transform,box-shadow] duration-300 group-hover:-translate-y-1 group-hover:shadow-warm-md group-hover:border-primary/40">
                 <Search className="h-9 w-9 text-primary" aria-hidden="true" />
               </div>
               <div
@@ -178,7 +183,7 @@ export default async function HomePage() {
 
             {/* Step 2 */}
             <div className="relative text-center group">
-              <div className="w-20 h-20 bg-background border-2 border-secondary/20 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-warm transition-[transform,box-shadow] duration-300 group-hover:-translate-y-1 group-hover:shadow-warm-md group-hover:border-secondary/40">
+              <div className="w-20 h-20 bg-background border-2 border-secondary/20 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-warm group:transition-[transform,box-shadow] duration-300 group-hover:-translate-y-1 group-hover:shadow-warm-md group-hover:border-secondary/40">
                 <Heart className="h-9 w-9 text-secondary" aria-hidden="true" />
               </div>
               <div
@@ -199,7 +204,7 @@ export default async function HomePage() {
 
             {/* Step 3 */}
             <div className="relative text-center group">
-              <div className="w-20 h-20 bg-background border-2 border-primary/20 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-warm transition-[transform,box-shadow] duration-300 group-hover:-translate-y-1 group-hover:shadow-warm-md group-hover:border-primary/40">
+              <div className="w-20 h-20 bg-background border-2 border-primary/20 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-warm group:transition-[transform,box-shadow] duration-300 group-hover:-translate-y-1 group-hover:shadow-warm-md group-hover:border-primary/40">
                 <Users className="h-9 w-9 text-primary" aria-hidden="true" />
               </div>
               <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-3">
@@ -293,7 +298,10 @@ export default async function HomePage() {
 
             {/* Stats Card */}
             <div className="bg-gradient-to-br from-primary to-primary/80 rounded-3xl p-8 md:p-12 text-primary-foreground">
-              <h3 className="text-2xl md:text-3xl font-bold font-heading mb-8">
+              <h3 className="text-2xl md:text-3xl font-bold font-heading mb-8 flex gap-4 items-center">
+                <span className="font-bold">
+                  <Heart size={32} className="" />
+                </span>
                 Trusted by Thousands
               </h3>
               <div className="grid grid-cols-2 gap-8">
@@ -301,25 +309,45 @@ export default async function HomePage() {
                   <div className="text-4xl md:text-5xl font-bold tabular-nums mb-2">
                     500+
                   </div>
-                  <p className="text-primary-foreground/80">Happy Homeowners</p>
+                  <p className="text-primary-foreground/80 flex items-center gap-2">
+                    <span>
+                      <Users2 />
+                    </span>
+                    Happy Homeowners
+                  </p>
                 </div>
                 <div>
                   <div className="text-4xl md:text-5xl font-bold tabular-nums mb-2">
                     1,000+
                   </div>
-                  <p className="text-primary-foreground/80">Active Listings</p>
+                  <p className="text-primary-foreground/80 flex items-center gap-2">
+                    <span>
+                      <List />
+                    </span>
+                    Active Listings
+                  </p>
                 </div>
                 <div>
                   <div className="text-4xl md:text-5xl font-bold tabular-nums mb-2">
                     50+
                   </div>
-                  <p className="text-primary-foreground/80">Trusted Agents</p>
+                  <p className="text-primary-foreground/80 flex items-center gap-2">
+                    <span>
+                      <LucideUserRoundSearch />
+                    </span>
+                    Trusted Agents
+                  </p>
                 </div>
                 <div>
                   <div className="text-4xl md:text-5xl font-bold tabular-nums mb-2">
                     4.9
                   </div>
-                  <p className="text-primary-foreground/80">Average Rating</p>
+                  <p className="text-primary-foreground/80 flex items-center gap-2">
+                    <span>
+                      <Star />
+                    </span>
+                    Average Rating
+                  </p>
                 </div>
               </div>
             </div>

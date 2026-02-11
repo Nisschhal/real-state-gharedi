@@ -152,9 +152,9 @@ export default function RootLayout({
             Skip to main content
           </a>
           {children} {/* YOUR PAGE CONTENT GOES HERE */}
-          <Toaster />{" "}
+          <Toaster />
           {/* Global component that stays "listening" for popup alerts */}
-          <SanityLive />{" "}
+          <SanityLive />
           {/* Global component that listens for CMS content changes */}
         </body>
       </html>

@@ -9,6 +9,22 @@
     - Sign up and create a project in [Sanity]
     - Follow the given instruction in `Getting Started` Tab
 
+### Creating Documents
+
+### Seeding Documents
+
+    - install `dotenv and @sanity/client`
+    - Go to your sanity dashboard `localhost:3000/studio` and on top-left of you profile dropdown click **manage project**
+    - Go to API tab
+    - Create two tokens: one **read** **editor** access
+    - past to .env.local as *SANITY_API_TOKEN* for edito/write access AND *SANITY_API_READ_TOKEN* for read/viewer access
+    - if you haven't then add NEXT_PUBLIC_SANITY_PROJECT_ID and NEXT_PUBLIC_SANITY_DATASET
+        - you will *project id* above tabs
+        - for data set go to *datasets* tab
+    - go to `script` folder and copy everything in your root
+    - and after creating document/schemas and setting up all the envs and data hit: `pnpm dlx tsx script/seed/seed.ts`
+    - for npm user: `npx tsx script/seed/seed.ts`
+
 ## Shadcn Setup
 
     - install [Shadcn](https://ui.shadcn.com/docs/installation/next)
