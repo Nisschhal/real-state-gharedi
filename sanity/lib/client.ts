@@ -8,6 +8,7 @@ export const client = createClient({
   apiVersion, // API version for Sanity queries (e.g., "2023-01-01" – this ensures compatibility).
   useCdn: true, // Set to false if statically generating pages, using ISR or tag-based revalidation
   perspective: "published",
+  token: process.env.SANITY_API_TOKEN, // API token for write access.
 })
 
 // Write client (for mutations - used in webhooks/server actions)
@@ -16,5 +17,5 @@ export const writeClient = createClient({
   dataset,
   apiVersion,
   useCdn: false, // Disables CDN for writes (mutations need real-time consistency).
-  token: process.env.SANITY_API_WRITE_TOKEN, // API token for write access.
+  token: process.env.SANITY_API_TOKEN, // API token for write access.
 })

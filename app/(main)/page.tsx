@@ -7,6 +7,7 @@ import {
   MapPin,
   Search,
   Shield,
+  Smile,
   Star,
   User,
   Users,
@@ -311,7 +312,7 @@ export default async function HomePage() {
                   </div>
                   <p className="text-primary-foreground/80 flex items-center gap-2">
                     <span>
-                      <Users2 />
+                      <Smile />
                     </span>
                     Happy Homeowners
                   </p>

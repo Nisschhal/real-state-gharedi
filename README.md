@@ -30,3 +30,8 @@
     - install [Shadcn](https://ui.shadcn.com/docs/installation/next)
     - `pnpm dlx shadcn@latest init`
     - install all components: `pnpm dlx shadcn@latest add --all`, rather then picking one by one
+
+## Map
+
+    - pnpm add maplibre-gl react-map-gl
+    - reference to `components/map` for MapView and Property Marker
