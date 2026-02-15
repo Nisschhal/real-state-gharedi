@@ -6,7 +6,7 @@ import {
   AGENT_ID_BY_USER_QUERY,
   AMENITIES_QUERY,
   LISTING_BY_ID_QUERY,
-} from "@/sanity/lib/queries"
+} from "@/lib/sanity/queries"
 
 export default async function EditListingPage({
   params,

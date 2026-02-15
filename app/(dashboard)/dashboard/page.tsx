@@ -10,7 +10,7 @@ import {
   DASHBOARD_LEADS_COUNT_QUERY,
   DASHBOARD_LISTINGS_COUNT_QUERY,
   DASHBOARD_NEW_LEADS_COUNT_QUERY,
-} from "@/sanity/lib/queries"
+} from "@/lib/sanity/queries"
 
 export const metadata: Metadata = {
   title: "Dashboard",

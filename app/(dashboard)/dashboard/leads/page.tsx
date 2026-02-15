@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { sanityFetch } from "@/sanity/lib/live"
-import { AGENT_ID_BY_USER_QUERY, AGENT_LEADS_QUERY } from "@/sanity/lib/queries"
+import { AGENT_ID_BY_USER_QUERY, AGENT_LEADS_QUERY } from "@/lib/sanity/queries"
 import type { Lead } from "@/types"
 
 export default async function LeadsPage() {
@@ -27,9 +27,10 @@ export default async function LeadsPage() {
 
   const { data: leads } = await sanityFetch({
     query: AGENT_LEADS_QUERY,
-    params: { agentId: agent._id },
+    params: { agentId: agent?._id },
   })
 
+  console.log("leads", leads)
   const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString("en-US", {
       month: "short",
@@ -60,7 +61,7 @@ export default async function LeadsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {leads.map((lead: Lead) => (
+              {leads?.map((lead: Lead) => (
                 <TableRow key={lead._id}>
                   <TableCell>
                     <div className="font-medium">{lead.buyerName}</div>

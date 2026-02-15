@@ -175,14 +175,22 @@ export function MapView({ properties, onPropertyClick }: MapViewProps) {
     [properties],
   )
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("en-US", {
+  // const formatPrice = (price: number) => {
+  //   return new Intl.NumberFormat("en-US", {
+  //     style: "currency",
+  //     currency: "USD",
+  //     maximumFractionDigits: 0,
+  //   }).format(price)
+  // }
+
+  // Nepali
+  const formatPriceNepali = (price: number) => {
+    return new Intl.NumberFormat("ne-NP", {
       style: "currency",
-      currency: "USD",
+      currency: "NPR",
       maximumFractionDigits: 0,
     }).format(price)
   }
-
   const handleMarkerClick = useCallback(
     (property: Property) => {
       setSelectedProperty((prev) =>
@@ -196,9 +204,9 @@ export function MapView({ properties, onPropertyClick }: MapViewProps) {
   return (
     <Map
       initialViewState={{
-        longitude: -98.5795,
-        latitude: 39.8283,
-        zoom: 4,
+        longitude: 83.465,
+        latitude: 27.707,
+        zoom: 11,
       }}
       style={{ width: "100%", height: "100%" }}
       // mapStyle="https://cdn.jsdelivr.net/npm/osm-liberty@latest/positron.json"
@@ -227,7 +235,7 @@ export function MapView({ properties, onPropertyClick }: MapViewProps) {
           >
             <div className="cursor-pointer">
               <div className="bg-primary text-primary-foreground px-2 py-1 rounded-md text-xs font-semibold shadow-md hover:bg-primary/90 transition-colors">
-                {formatPrice(property.price)}
+                {formatPriceNepali(property.price)}
               </div>
             </div>
           </Marker>

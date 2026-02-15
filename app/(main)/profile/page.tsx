@@ -6,7 +6,7 @@ import { ProfileForm } from "@/components/forms/ProfileForm"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { sanityFetch } from "@/sanity/lib/live"
-import { USER_PROFILE_QUERY } from "@/sanity/lib/queries"
+import { USER_PROFILE_QUERY } from "@/lib/sanity/queries"
 
 export default async function ProfilePage() {
   const { userId } = await auth()

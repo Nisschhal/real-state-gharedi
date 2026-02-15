@@ -8,7 +8,7 @@ import {
   AGENT_BY_USER_ID_QUERY,
   USER_EXISTS_QUERY,
   USER_SAVED_IDS_QUERY,
-} from "@/sanity/lib/queries"
+} from "@/lib/sanity/queries"
 import type { UserOnboardingData, UserProfileData } from "@/types"
 
 export async function completeUserOnboarding(data: UserOnboardingData) {

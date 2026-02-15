@@ -21,7 +21,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { StatBadge } from "@/components/ui/stat-badge"
 import { sanityFetch } from "@/sanity/lib/live"
-import { PROPERTY_DETAIL_QUERY } from "@/sanity/lib/queries"
+import { PROPERTY_DETAIL_QUERY } from "@/lib/sanity/queries"
 
 export async function generateMetadata({
   params,
@@ -69,12 +69,23 @@ export default async function PropertyPage({
     notFound()
   }
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("en-US", {
+  // const formatPrice = (price: number) => {
+  //   return new Intl.NumberFormat("en-US", {
+  //     style: "currency",
+  //     currency: "USD",
+  //     maximumFractionDigits: 0,
+  //   }).format(price)
+  // }
+
+  const formatPriceNepali = (price: number) => {
+    console.log("Rwa price", price)
+    const nepaliPrice = new Intl.NumberFormat("ne-NP", {
       style: "currency",
-      currency: "USD",
+      currency: "NPR",
       maximumFractionDigits: 0,
     }).format(price)
+    console.log("Nepali pirce", nepaliPrice)
+    return nepaliPrice
   }
 
   const statusLabel =
@@ -125,7 +136,7 @@ export default async function PropertyPage({
                 <div>
                   <div className="flex items-center gap-3 mb-2">
                     <h1 className="text-3xl md:text-4xl font-bold font-heading tabular-nums">
-                      {formatPrice(property.price)}
+                      {formatPriceNepali(property.price)}
                     </h1>
                     {statusLabel && (
                       <Badge
@@ -145,7 +156,7 @@ export default async function PropertyPage({
                   {userId && <SavePropertyButton propertyId={property._id} />}
                   <SharePropertyButton
                     title={property.title}
-                    price={formatPrice(property.price)}
+                    price={formatPriceNepali(property.price)}
                   />
                 </div>
               </div>
@@ -262,7 +273,7 @@ export default async function PropertyPage({
                       properties={[
                         {
                           ...property,
-                          slug: property.slug?.cur  rent || id,
+                          slug: property.slug?.current || id,
                         },
                       ]}
                     />

@@ -2,6 +2,7 @@
 
 import {
   ArrowLeft,
+  ChartColumnIncreasingIcon,
   CreditCard,
   Home,
   LayoutDashboard,
@@ -49,6 +50,12 @@ const navItems = [
     label: "Billing",
     icon: CreditCard,
     description: "Manage subscription",
+  },
+  {
+    href: "/dashboard/analytics",
+    label: "Analytics",
+    icon: ChartColumnIncreasingIcon,
+    description: "View performance metrics",
   },
 ]
 

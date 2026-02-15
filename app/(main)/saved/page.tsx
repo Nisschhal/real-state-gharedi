@@ -6,7 +6,7 @@ import { PropertyGrid } from "@/components/property/PropertyGrid"
 import { Button } from "@/components/ui/button"
 import { EmptyState } from "@/components/ui/empty-state"
 import { sanityFetch } from "@/sanity/lib/live"
-import { USER_SAVED_LISTINGS_QUERY } from "@/sanity/lib/queries"
+import { USER_SAVED_LISTINGS_QUERY } from "@/lib/sanity/queries"
 
 export default async function SavedListingsPage() {
   const { userId } = await auth()

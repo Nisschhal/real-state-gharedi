@@ -3,7 +3,7 @@ import { redirect } from "next/navigation"
 import { createAgentDocument } from "@/actions/agents"
 import { AgentOnboardingForm } from "@/components/forms/AgentOnboardingForm"
 import { sanityFetch } from "@/sanity/lib/live"
-import { AGENT_ONBOARDING_CHECK_QUERY } from "@/sanity/lib/queries"
+import { AGENT_ONBOARDING_CHECK_QUERY } from "@/lib/sanity/queries"
 
 export default async function AgentOnboardingPage() {
   // Middleware guarantees: user is authenticated + has agent plan

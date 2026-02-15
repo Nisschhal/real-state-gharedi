@@ -27,7 +27,7 @@ import { sanityFetch } from "@/sanity/lib/live"
 import {
   AGENT_ID_BY_USER_QUERY,
   AGENT_LISTINGS_QUERY,
-} from "@/sanity/lib/queries"
+} from "@/lib/sanity/queries"
 import type { Property } from "@/types"
 
 export default async function ListingsPage() {

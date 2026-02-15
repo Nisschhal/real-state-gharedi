@@ -7,7 +7,7 @@ import { sanityFetch } from "@/sanity/lib/live"
 import {
   AGENT_ID_BY_USER_QUERY,
   PROPERTY_AGENT_REF_QUERY,
-} from "@/sanity/lib/queries"
+} from "@/lib/sanity/queries"
 
 interface ImageReference {
   _type: "image"

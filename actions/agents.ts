@@ -7,7 +7,7 @@ import { sanityFetch } from "@/sanity/lib/live"
 import {
   AGENT_BY_USER_ID_QUERY,
   AGENT_ID_BY_USER_QUERY,
-} from "@/sanity/lib/queries"
+} from "@/lib/sanity/queries"
 import type { AgentOnboardingData, AgentProfileData } from "@/types"
 
 /**
