@@ -18,7 +18,7 @@ import {
   AMENITIES_QUERY,
   PROPERTIES_COUNT_QUERY,
   PROPERTIES_SEARCH_QUERY,
-} from "@/lib/sanity/queries"
+} from "@/sanity/lib/queries"
 import { DynamicMapView } from "@/components/map/DynamicMapView"
 
 export const metadata: Metadata = {

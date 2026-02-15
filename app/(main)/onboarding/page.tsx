@@ -2,7 +2,7 @@ import { auth, clerkClient, currentUser } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
 import { OnboardingForm } from "@/components/forms/OnboardingForm"
 import { sanityFetch } from "@/sanity/lib/live"
-import { USER_EXISTS_QUERY } from "@/lib/sanity/queries"
+import { USER_EXISTS_QUERY } from "@/sanity/lib/queries"
 
 export default async function OnboardingPage() {
   const { userId } = await auth()

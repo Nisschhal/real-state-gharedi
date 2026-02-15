@@ -9,7 +9,7 @@ import {
   LEAD_AGENT_REF_QUERY,
   LEAD_EXISTS_QUERY,
   USER_CONTACT_QUERY,
-} from "@/lib/sanity/queries"
+} from "@/sanity/lib/queries"
 
 /**
  * Ensures Clerk metadata is synced with Sanity state.

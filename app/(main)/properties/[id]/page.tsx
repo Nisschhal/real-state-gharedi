@@ -21,7 +21,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { StatBadge } from "@/components/ui/stat-badge"
 import { sanityFetch } from "@/sanity/lib/live"
-import { PROPERTY_DETAIL_QUERY } from "@/lib/sanity/queries"
+import { PROPERTY_DETAIL_QUERY } from "@/sanity/lib/queries"
 
 export async function generateMetadata({
   params,
@@ -262,7 +262,7 @@ export default async function PropertyPage({
                       properties={[
                         {
                           ...property,
-                          slug: property.slug?.current || id,
+                          slug: property.slug?.cur  rent || id,
                         },
                       ]}
                     />

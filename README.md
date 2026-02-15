@@ -35,3 +35,9 @@
 
     - pnpm add maplibre-gl react-map-gl
     - reference to `components/map` for MapView and Property Marker
+
+## Pricing
+
+    - enable Billing in clerk
+    - create new plan
+    - disable free plan: toggle off publicly avaiable
