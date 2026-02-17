@@ -18,7 +18,6 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { LoadingButton } from "@/components/ui/loading-button"
 import {
   Select,
@@ -28,7 +27,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { AddressAutocomplete, type AddressResult } from "./AddressAutocomplete"
 import { type ImageItem, ImageUpload } from "./ImageUpload"
 import { LocationPicker } from "./LocationPicker"
 
@@ -64,17 +62,10 @@ const formSchema = z.object({
     .min(1800)
     .max(new Date().getFullYear())
     .optional(),
-  // Address fields are still stored but auto-filled from autocomplete
-  street: z.string().min(1, "Address is required"),
-  city: z.string().min(1, "City is required"),
-  state: z.string().min(1, "State is required"),
-  zipCode: z.string().min(1, "ZIP code is required"),
   amenities: z.array(z.string()).optional(),
 })
 
-// Input type: what the form fields receive (strings from inputs)
 type FormDataInput = z.input<typeof formSchema>
-// Output type: what validation produces (coerced to proper types)
 type FormDataOutput = z.output<typeof formSchema>
 
 interface ListingImage {
@@ -101,12 +92,6 @@ interface ListingFormProps {
     bathrooms: number
     squareFeet: number
     yearBuilt?: number
-    address?: {
-      street?: string
-      city?: string
-      state?: string
-      zipCode?: string
-    }
     location?: GeoPoint
     amenities?: string[]
     images?: ListingImage[]
@@ -122,7 +107,9 @@ export function ListingForm({
 }: ListingFormProps) {
   const [isPending, startTransition] = useTransition()
 
-  // Initialize images from listing data
+  console.log("Lising", listing)
+
+  // Initialize images
   const initialImages: ImageItem[] =
     listing?.images?.map((img) => ({
       id: img.asset._id,
@@ -131,24 +118,11 @@ export function ListingForm({
     })) || []
 
   const [images, setImages] = useState<ImageItem[]>(initialImages)
+
+  // Location state
   const [location, setLocation] = useState<GeoPoint | undefined>(
     listing?.location,
   )
-
-  // Build initial address display value for edit mode
-  const initialAddressValue = listing?.address
-    ? [
-        listing.address.street,
-        listing.address.city,
-        listing.address.state,
-        listing.address.zipCode,
-      ]
-        .filter(Boolean)
-        .join(", ")
-    : ""
-
-  const [addressDisplayValue, setAddressDisplayValue] =
-    useState(initialAddressValue)
 
   const form = useForm<FormDataInput, unknown, FormDataOutput>({
     resolver: zodResolver(formSchema),
@@ -163,46 +137,14 @@ export function ListingForm({
       bathrooms: listing?.bathrooms || 0,
       squareFeet: listing?.squareFeet || 0,
       yearBuilt: listing?.yearBuilt,
-      street: listing?.address?.street || "",
-      city: listing?.address?.city || "",
-      state: listing?.address?.state || "",
-      zipCode: listing?.address?.zipCode || "",
       amenities: listing?.amenities || [],
     },
   })
 
-  // Handle address selection from autocomplete
-  const handleAddressSelect = (address: AddressResult | null) => {
-    if (address) {
-      // Update form fields with parsed address
-      form.setValue("street", address.street, { shouldValidate: true })
-      form.setValue("city", address.city, { shouldValidate: true })
-      form.setValue("state", address.state, { shouldValidate: true })
-      form.setValue("zipCode", address.zipCode, { shouldValidate: true })
-
-      // Update location for map
-      setLocation({ lat: address.lat, lng: address.lng })
-      setAddressDisplayValue(address.formattedAddress)
-    } else {
-      // Clear address fields
-      form.setValue("street", "", { shouldValidate: true })
-      form.setValue("city", "", { shouldValidate: true })
-      form.setValue("state", "", { shouldValidate: true })
-      form.setValue("zipCode", "", { shouldValidate: true })
-      setLocation(undefined)
-      setAddressDisplayValue("")
-    }
-  }
-
-  // Sync location picker changes back (for manual adjustments)
-  const handleLocationChange = (newLocation: GeoPoint) => {
-    setLocation(newLocation)
-  }
-
   const onSubmit = (data: FormDataOutput) => {
     startTransition(async () => {
       try {
-        // Convert images to Sanity format
+        // Prepare images for Sanity
         const imageRefs = images
           .filter((img) => !img.isUploading && img.assetRef)
           .map((img) => ({
@@ -224,13 +166,7 @@ export function ListingForm({
           bathrooms: data.bathrooms,
           squareFeet: data.squareFeet,
           yearBuilt: data.yearBuilt,
-          address: {
-            street: data.street,
-            city: data.city,
-            state: data.state,
-            zipCode: data.zipCode,
-          },
-          location,
+          location, // ← only lat/lng
           amenities: data.amenities,
           images: imageRefs,
         }
@@ -248,14 +184,6 @@ export function ListingForm({
     })
   }
 
-  // Watch for validation errors on address fields to show in autocomplete
-  const addressErrors = [
-    form.formState.errors.street,
-    form.formState.errors.city,
-    form.formState.errors.state,
-    form.formState.errors.zipCode,
-  ].filter(Boolean)
-
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -272,7 +200,7 @@ export function ListingForm({
                   <FormLabel>Property Title</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="e.g., Beautiful 3BR Home in Downtown"
+                      placeholder="e.g., Beautiful 3BR Home in Butwal"
                       {...field}
                     />
                   </FormControl>
@@ -305,16 +233,13 @@ export function ListingForm({
                 name="price"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Price ($)</FormLabel>
+                    <FormLabel>Price (NPR)</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
-                        placeholder="450000"
-                        name={field.name}
-                        onBlur={field.onBlur}
-                        ref={field.ref}
-                        disabled={field.disabled}
-                        value={String(field.value ?? "")}
+                        placeholder="12500000"
+                        {...field}
+                        value={field.value ?? ""}
                         onChange={(e) => field.onChange(e.target.value)}
                       />
                     </FormControl>
@@ -414,11 +339,8 @@ export function ListingForm({
                       <Input
                         type="number"
                         min="0"
-                        name={field.name}
-                        onBlur={field.onBlur}
-                        ref={field.ref}
-                        disabled={field.disabled}
-                        value={String(field.value ?? "")}
+                        {...field}
+                        value={field.value ?? ""}
                         onChange={(e) => field.onChange(e.target.value)}
                       />
                     </FormControl>
@@ -438,11 +360,8 @@ export function ListingForm({
                         type="number"
                         min="0"
                         step="0.5"
-                        name={field.name}
-                        onBlur={field.onBlur}
-                        ref={field.ref}
-                        disabled={field.disabled}
-                        value={String(field.value ?? "")}
+                        {...field}
+                        value={field.value ?? ""}
                         onChange={(e) => field.onChange(e.target.value)}
                       />
                     </FormControl>
@@ -456,16 +375,13 @@ export function ListingForm({
                 name="squareFeet"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Square Feet</FormLabel>
+                    <FormLabel>Area (sq ft)</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
                         min="0"
-                        name={field.name}
-                        onBlur={field.onBlur}
-                        ref={field.ref}
-                        disabled={field.disabled}
-                        value={String(field.value ?? "")}
+                        {...field}
+                        value={field.value ?? ""}
                         onChange={(e) => field.onChange(e.target.value)}
                       />
                     </FormControl>
@@ -483,12 +399,9 @@ export function ListingForm({
                     <FormControl>
                       <Input
                         type="number"
-                        placeholder="2020"
-                        name={field.name}
-                        onBlur={field.onBlur}
-                        ref={field.ref}
-                        disabled={field.disabled}
-                        value={String(field.value ?? "")}
+                        placeholder="2018"
+                        {...field}
+                        value={field.value ?? ""}
                         onChange={(e) => field.onChange(e.target.value)}
                       />
                     </FormControl>
@@ -521,14 +434,12 @@ export function ListingForm({
                             id={amenity.value}
                             checked={field.value?.includes(amenity.value)}
                             onCheckedChange={(checked: boolean) => {
-                              const currentValue = field.value || []
+                              const current = field.value || []
                               if (checked) {
-                                field.onChange([...currentValue, amenity.value])
+                                field.onChange([...current, amenity.value])
                               } else {
                                 field.onChange(
-                                  currentValue.filter(
-                                    (v) => v !== amenity.value,
-                                  ),
+                                  current.filter((v) => v !== amenity.value),
                                 )
                               }
                             }}
@@ -545,7 +456,7 @@ export function ListingForm({
                     </div>
                   ) : (
                     <p className="text-sm text-muted-foreground">
-                      No amenities available. Add amenities in Sanity Studio.
+                      No amenities available. Add them in Sanity Studio.
                     </p>
                   )}
                   <FormMessage />
@@ -557,45 +468,16 @@ export function ListingForm({
 
         <Card>
           <CardHeader>
-            <CardTitle>Property Address</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {/* Address Autocomplete - single input that replaces separate fields */}
-            <div className="space-y-2">
-              <Label>Search Address</Label>
-              <AddressAutocomplete
-                value={addressDisplayValue}
-                onChange={handleAddressSelect}
-                placeholder="Start typing an address (e.g., 123 Main St, San Francisco)"
-                disabled={isPending}
-              />
-              {addressErrors.length > 0 && !form.getValues("street") && (
-                <p className="text-sm text-destructive">
-                  Please select an address from the suggestions
-                </p>
-              )}
-            </div>
-
-            {/* Hidden form fields - these store the actual values for submission */}
-            <input type="hidden" {...form.register("street")} />
-            <input type="hidden" {...form.register("city")} />
-            <input type="hidden" {...form.register("state")} />
-            <input type="hidden" {...form.register("zipCode")} />
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Location on Map</CardTitle>
+            <CardTitle>Property Location</CardTitle>
             <p className="text-sm text-muted-foreground">
-              The map updates automatically when you select an address. You can
-              also click to fine-tune the exact location.
+              Search for an address or click on the map to set / adjust the
+              exact location pin.
             </p>
           </CardHeader>
           <CardContent>
             <LocationPicker
               value={location}
-              onChange={handleLocationChange}
+              onChange={setLocation}
               disabled={isPending}
             />
           </CardContent>

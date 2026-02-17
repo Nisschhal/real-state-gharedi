@@ -45,13 +45,14 @@ export default async function ListingsPage() {
   })
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
+    const formatted = new Intl.NumberFormat("en-US", {
+      style: "decimal", // or "currency" if you want automatic symbol (but we'll override)
+      minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(price)
-  }
 
+    return `NPR ${formatted}`
+  }
   const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString("en-US", {
       month: "short",

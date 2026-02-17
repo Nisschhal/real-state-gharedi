@@ -40,7 +40,7 @@ export async function generateMetadata({
 
   const price = new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "USD",
+    currency: "NPR",
     maximumFractionDigits: 0,
   }).format(property.price ?? 0)
 
@@ -77,15 +77,33 @@ export default async function PropertyPage({
   //   }).format(price)
   // }
 
-  const formatPriceNepali = (price: number) => {
-    console.log("Rwa price", price)
-    const nepaliPrice = new Intl.NumberFormat("ne-NP", {
-      style: "currency",
-      currency: "NPR",
+  const formatPriceNepal = (price: number | null | undefined): string => {
+    if (!price || price <= 0) {
+      return "Price on call"
+    }
+
+    // Full number with Indian-style comma grouping (using en-IN locale)
+    const fullFormatted = new Intl.NumberFormat("en-IN", {
+      minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(price)
-    console.log("Nepali pirce", nepaliPrice)
-    return nepaliPrice
+
+    // Short form: Cr / Lakh
+    let short = ""
+    if (price >= 10000000) {
+      const crore = (price / 10000000).toFixed(2).replace(/\.?0+$/, "")
+      short = `${crore} Cr`
+    } else if (price >= 100000) {
+      const lakh = (price / 100000).toFixed(1).replace(/\.?0+$/, "")
+      short = `${lakh} Lakh`
+    }
+
+    // Combine both
+    if (short) {
+      return `NPR ${fullFormatted} (${short})`
+    }
+
+    return `NPR ${fullFormatted}`
   }
 
   const statusLabel =
@@ -136,7 +154,7 @@ export default async function PropertyPage({
                 <div>
                   <div className="flex items-center gap-3 mb-2">
                     <h1 className="text-3xl md:text-4xl font-bold font-heading tabular-nums">
-                      {formatPriceNepali(property.price)}
+                      {formatPriceNepal(property.price)}
                     </h1>
                     {statusLabel && (
                       <Badge
@@ -156,7 +174,7 @@ export default async function PropertyPage({
                   {userId && <SavePropertyButton propertyId={property._id} />}
                   <SharePropertyButton
                     title={property.title}
-                    price={formatPriceNepali(property.price)}
+                    price={formatPriceNepal(property.price)}
                   />
                 </div>
               </div>

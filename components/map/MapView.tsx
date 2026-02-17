@@ -184,12 +184,14 @@ export function MapView({ properties, onPropertyClick }: MapViewProps) {
   // }
 
   // Nepali
-  const formatPriceNepali = (price: number) => {
-    return new Intl.NumberFormat("ne-NP", {
-      style: "currency",
-      currency: "NPR",
+  const formatPrice = (price: number) => {
+    const formatted = new Intl.NumberFormat("en-US", {
+      style: "decimal", // or "currency" if you want automatic symbol (but we'll override)
+      minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(price)
+
+    return `NPR ${formatted}`
   }
   const handleMarkerClick = useCallback(
     (property: Property) => {
@@ -235,7 +237,7 @@ export function MapView({ properties, onPropertyClick }: MapViewProps) {
           >
             <div className="cursor-pointer">
               <div className="bg-primary text-primary-foreground px-2 py-1 rounded-md text-xs font-semibold shadow-md hover:bg-primary/90 transition-colors">
-                {formatPriceNepali(property.price)}
+                {formatPrice(property.price)}
               </div>
             </div>
           </Marker>

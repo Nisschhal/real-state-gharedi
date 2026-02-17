@@ -29,15 +29,14 @@ export function PropertyCard({
   //   }).format(price)
   // }
 
-  const formatPriceNepali = (price: number) => {
-    console.log("Rwa price", price)
-    const nepaliPrice = new Intl.NumberFormat("ne-NP", {
-      style: "currency",
-      currency: "NPR",
+  const formatPrice = (price: number) => {
+    const formatted = new Intl.NumberFormat("en-US", {
+      style: "decimal", // or "currency" if you want automatic symbol (but we'll override)
+      minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(price)
-    console.log("Nepali pirce", nepaliPrice)
-    return nepaliPrice
+
+    return `NPR ${formatted}`
   }
 
   const handleSaveClick = (e: React.MouseEvent) => {
@@ -124,7 +123,7 @@ export function PropertyCard({
           {/* Price */}
           <div className="flex items-start justify-between gap-2 mb-2">
             <h3 className="font-bold font-heading text-xl tabular-nums">
-              {formatPriceNepali(property.price)}
+              {formatPrice(property.price)}
             </h3>
           </div>
 

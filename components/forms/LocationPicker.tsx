@@ -143,13 +143,12 @@ export function LocationPicker({
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // const inputRef = useRef<HTMLInputElement>(null)
   const debounceTimer = useRef<NodeJS.Timeout | null>(null)
-
+  const hasRunInitialReverse = useRef(false)
   const popoverWrapperRef = useRef<HTMLDivElement>(null)
   const [popoverWidth, setPopoverWidth] = useState<string>("100%")
 
-  // Measure width on mount + resize + focus
+  // Measure popover width
   useEffect(() => {
     const updateWidth = () => {
       if (popoverWrapperRef.current) {
@@ -158,9 +157,9 @@ export function LocationPicker({
       }
     }
 
-    updateWidth() // initial
+    updateWidth()
     window.addEventListener("resize", updateWidth)
-    window.addEventListener("focus", updateWidth) // on focus too
+    window.addEventListener("focus", updateWidth)
 
     return () => {
       window.removeEventListener("resize", updateWidth)
@@ -168,14 +167,59 @@ export function LocationPicker({
     }
   }, [])
 
-  // Cleanup timer
+  // Cleanup debounce timer
   useEffect(() => {
     return () => {
       if (debounceTimer.current) clearTimeout(debounceTimer.current)
     }
   }, [])
 
-  // Trigger search ONLY on typing pause / Enter / icon click
+  // ────────────────────────────────────────────────
+  // Run reverse geocoding ONCE when loading existing location (edit mode)
+  // ────────────────────────────────────────────────
+  useEffect(() => {
+    if (value && !searchQuery.trim() && !hasRunInitialReverse.current) {
+      hasRunInitialReverse.current = true
+
+      const doReverse = async () => {
+        try {
+          const res = await fetch(
+            `https://api.locationiq.com/v1/reverse?key=${process.env.NEXT_PUBLIC_LOCATIONIQ_KEY}&lat=${value.lat}&lon=${value.lng}&format=json&addressdetails=1&zoom=16&normalizeaddress=1`,
+          )
+
+          if (!res.ok) throw new Error("Reverse failed")
+
+          const data = await res.json()
+          console.log("initial reverse geocoding result:", data)
+
+          let name = data.display_name
+
+          // Optional: nicer fallback for Nepal
+          if (!name || name.length > 120 || name.includes("Unnamed")) {
+            const addr = data.address || {}
+            name =
+              [
+                addr.road || addr.hamlet || addr.neighbourhood || "",
+                addr.city || addr.town || addr.village || addr.county || "",
+                addr.state_district || addr.state || "",
+                addr.country || "",
+              ]
+                .filter(Boolean)
+                .join(", ") ||
+              `${value.lat.toFixed(6)}, ${value.lng.toFixed(6)}`
+          }
+
+          setSearchQuery(name)
+        } catch (err) {
+          console.error("Initial reverse geocoding error:", err)
+          setSearchQuery(`${value.lat.toFixed(6)}, ${value.lng.toFixed(6)}`)
+        }
+      }
+
+      doReverse()
+    }
+  }, [value?.lat, value?.lng]) // eslint-disable-line react-hooks/exhaustive-deps
+
   const triggerSearch = useCallback(() => {
     if (!searchQuery.trim()) {
       setSuggestions([])
@@ -199,7 +243,6 @@ export function LocationPicker({
 
         const data: Suggestion[] = await res.json()
 
-        // Deduplicate
         const uniqueMap: Record<string, Suggestion> = {}
         data.forEach((item) => {
           if (!uniqueMap[item.place_id]) {
@@ -210,14 +253,13 @@ export function LocationPicker({
         const uniqueSuggestions = Object.values(uniqueMap)
         setSuggestions(uniqueSuggestions)
 
-        // Auto-open popover when suggestions are ready
         if (uniqueSuggestions.length > 0) {
           setOpen(true)
         }
       } catch (err) {
         console.error("Search error:", err)
         setError(
-          "No results found on search try different keywords or click on the map to select location",
+          "No results found – try different keywords or click on the map",
         )
       } finally {
         setLoading(false)
@@ -230,24 +272,16 @@ export function LocationPicker({
     triggerSearch()
   }, [searchQuery, triggerSearch])
 
-  // On focus: ONLY open popover if suggestions already exist (no new search)
-  // const handleFocus = useCallback(() => {
-  //   // Micro-delay to avoid Radix timing race / flicker
-  //   if (suggestions.length > 0 || loading || error) {
-  //   }
-  // }, [suggestions])
   const handleFocus = () => {
-    // Micro-delay to avoid Radix timing race / flicker
     setTimeout(() => {
       if (suggestions.length > 0 || loading || error) {
         setOpen(true)
       } else if (!searchQuery && !loading && !error) {
-        setSuggestions([]) // Clear old suggestions on every focus to avoid confusion with new search results
+        setSuggestions([])
       }
     }, 100)
   }
 
-  // Enter key → immediate search
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault()
@@ -255,7 +289,6 @@ export function LocationPicker({
     }
   }
 
-  // Click search icon → immediate search
   const handleSearchIconClick = () => {
     triggerSearch()
   }
@@ -295,17 +328,32 @@ export function LocationPicker({
       setTimeout(async () => {
         try {
           const res = await fetch(
-            `https://api.locationiq.com/v1/reverse?key=${process.env.NEXT_PUBLIC_LOCATIONIQ_KEY}&lat=${rounded.lat}&lon=${rounded.lng}&format=json`,
+            `https://api.locationiq.com/v1/reverse?key=${process.env.NEXT_PUBLIC_LOCATIONIQ_KEY}&lat=${rounded.lat}&lon=${rounded.lng}&format=json&addressdetails=1&zoom=16&normalizeaddress=1`,
           )
 
           if (res.ok) {
             const data = await res.json()
-            const name =
-              data.display_name ||
-              `${rounded.lat.toFixed(6)}, ${rounded.lng.toFixed(6)}`
+            console.log("map click reverse:", data)
+            let name = data.display_name
+
+            // Optional nicer fallback
+            if (!name || name.length > 120 || name.includes("Unnamed")) {
+              const addr = data.address || {}
+              name =
+                [
+                  addr.road || addr.hamlet || addr.neighbourhood || "",
+                  addr.city || addr.town || addr.village || addr.county || "",
+                  addr.state_district || addr.state || "",
+                  addr.country || "",
+                ]
+                  .filter(Boolean)
+                  .join(", ") ||
+                `${rounded.lat.toFixed(6)}, ${rounded.lng.toFixed(6)}`
+            }
+
             setSearchQuery(name)
-            // Auto-trigger search + open popover for new name
-            setTimeout(triggerSearch, 600)
+            // Optional: re-trigger forward search if you want suggestions again
+            // setTimeout(triggerSearch, 600)
           } else {
             setSearchQuery(
               `${rounded.lat.toFixed(6)}, ${rounded.lng.toFixed(6)}`,
@@ -317,7 +365,7 @@ export function LocationPicker({
         }
       }, 300)
     },
-    [onChange, disabled, triggerSearch],
+    [onChange, disabled],
   )
 
   return (
@@ -329,8 +377,8 @@ export function LocationPicker({
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild className="">
             <div className="relative w-full">
+              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                // ref={inputRef}
                 placeholder="Search address (e.g. Butwal, Lumbini...)"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -358,16 +406,16 @@ export function LocationPicker({
             align="start"
             sideOffset={8}
             className="
-        p-0 m-0 
-        rounded-t-none 
-        border-t-0 
-        shadow-lg 
-        overflow-hidden
-        text-sm
-      "
-            style={{ width: popoverWidth }} // ← exact measured width
+              p-0 m-0 
+              rounded-t-none 
+              border-t-0 
+              shadow-lg 
+              overflow-hidden
+              text-sm
+            "
+            style={{ width: popoverWidth }}
             avoidCollisions={true}
-            forceMount // ← renders hidden when closed → no flicker on open
+            forceMount
             onOpenAutoFocus={(e) => e.preventDefault()}
           >
             <Command shouldFilter={false} loop>

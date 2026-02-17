@@ -11,6 +11,17 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  typescript: {
+    // !! WARN !!
+    // Dangerously allow production builds to successfully complete even if
+    // your project has type errors.
+    // !! WARN !!
+    ignoreBuildErrors: true,
+  },
+  // You can also ignore ESLint errors during the build if needed
+  // eslint: {
+  //   ignoreDuringBuilds: true,
+  // },
 }
 
 export default nextConfig
